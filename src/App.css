@@ -1,0 +1,507 @@
+:root {
+  --bg-page: #f5f6fa;
+  --bg-panel: #ffffff;
+  --bg-card: #f9fafb;
+  --bg-accent-soft: #f0f4ff;
+  --track-bg: #e5e7eb;
+  --text: #1a1a2e;
+  --text-muted: #6b7280;
+  --border: #d1d5db;
+  --accent: #1e3a8a;
+  --danger: #dc2626;
+  --shadow: rgba(0, 0, 0, 0.05);
+}
+
+[data-theme='dark'] {
+  --bg-page: #101114;
+  --bg-panel: #1b1c22;
+  --bg-card: #24262e;
+  --bg-accent-soft: #1e2a4a;
+  --track-bg: #33353f;
+  --text: #e7e7ea;
+  --text-muted: #9ca3af;
+  --border: #3a3c46;
+  --accent: #6d8bf5;
+  --danger: #f87171;
+  --shadow: rgba(0, 0, 0, 0.4);
+}
+
+* {
+  box-sizing: border-box;
+  max-width: 100%;
+  transition: background-color 1s, color 1s, border-color 1s, box-shadow 1s;
+}
+
+html {
+  scrollbar-gutter: stable;
+}
+
+h1,
+h2 {
+  color: var(--text);
+}
+
+html,
+body {
+  margin: 0;
+  width: 100%;
+  overflow-x: hidden;
+  font-family: system-ui, -apple-system, sans-serif;
+  background: var(--bg-page);
+  color: var(--text);
+}
+
+.app {
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+  min-height: 100vh;
+  background: var(--bg-panel);
+  box-shadow: 0 0 20px var(--shadow);
+  padding: 1.5rem;
+  overflow-x: hidden;
+}
+
+.app-footer {
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+  text-align: center;
+}
+
+.onboarding {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.onboarding-tabs {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.onboarding-tab {
+  flex: 1;
+  background: var(--bg-card);
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+.onboarding-tab.active {
+  background: var(--accent);
+  color: white;
+}
+
+.onboarding form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.invite-code {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-top: -0.5rem;
+  margin-bottom: 1rem;
+}
+
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.theme-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  transition: color 0.2s;
+}
+
+.theme-label.active {
+  color: var(--text);
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 52px;
+  height: 28px;
+  cursor: pointer;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+  position: absolute;
+}
+
+.switch-track {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  background: var(--track-bg);
+  border-radius: 999px;
+  transition: background 0.2s;
+}
+
+.switch-thumb {
+  position: absolute;
+  left: 3px;
+  top: 3px;
+  height: 22px;
+  width: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-panel);
+  color: var(--text-muted);
+  border-radius: 50%;
+  transition: transform 0.2s;
+  box-shadow: 0 1px 3px var(--shadow);
+}
+
+.switch input:checked + .switch-track {
+  background: var(--accent);
+}
+
+.switch input:checked + .switch-track .switch-thumb {
+  transform: translateX(24px);
+  color: var(--accent);
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+header h1 {
+  font-size: 1.4rem;
+  margin: 0;
+}
+
+.link-button {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  text-decoration: underline;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.header-title-link {
+  text-decoration: none;
+  color: inherit;
+}
+
+.dashboard h2 {
+  font-size: 1.1rem;
+}
+
+.tracker-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.tracker-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--bg-card);
+  border-radius: 10px;
+  padding: 0.9rem 1rem;
+}
+
+.tracker-link {
+  color: var(--accent);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.tracker-actions {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.rename-form {
+  display: flex;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.rename-form input {
+  flex: 1;
+  padding: 0.4rem 0.6rem;
+}
+
+.rename-form button {
+  padding: 0.4rem 0.7rem;
+  font-size: 0.85rem;
+}
+
+.new-tracker-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.back-link {
+  display: inline-block;
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+}
+
+.tracker-name {
+  margin-top: 0;
+  font-size: 1.3rem;
+}
+
+.centered {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.auth-card {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.auth-card form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+input,
+button {
+  font-size: 1rem;
+  padding: 0.7rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg-panel);
+  color: var(--text);
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  font-weight: 600;
+}
+
+.primary-button {
+  background: var(--accent);
+  color: white;
+  width: 100%;
+  padding: 1.2rem;
+  border-radius: 12px;
+  font-size: 1.1rem;
+}
+
+.error-text {
+  color: var(--danger);
+}
+
+.progress-section {
+  margin-bottom: 1.5rem;
+}
+
+.progress-numbers {
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.goal-edit-form {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  margin-bottom: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.goal-edit-form input {
+  width: 70px;
+  padding: 0.4rem;
+}
+
+.goal-edit-form button {
+  padding: 0.4rem 0.7rem;
+  font-size: 0.85rem;
+}
+
+.progress-bar {
+  background: var(--track-bg);
+  border-radius: 999px;
+  height: 14px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  background: var(--accent);
+  height: 100%;
+  transition: width 0.3s;
+}
+
+.night-fill {
+  background: var(--accent);
+}
+
+.timer-section {
+  margin-bottom: 1.5rem;
+}
+
+.timer-running {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  align-items: center;
+  background: var(--bg-accent-soft);
+  padding: 1.5rem;
+  border-radius: 12px;
+}
+
+.timer-display {
+  font-size: 2.2rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.night-toggle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
+
+.stop-button {
+  background: var(--danger);
+  color: white;
+  width: 100%;
+  padding: 1rem;
+  border-radius: 10px;
+}
+
+.manual-entry {
+  margin-bottom: 1.5rem;
+}
+
+.manual-entry summary {
+  cursor: pointer;
+  color: var(--text-muted);
+  margin-bottom: 0.5rem;
+}
+
+.manual-entry {
+  width: 100%;
+}
+
+.manual-entry form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  width: 100%;
+  min-width: 0;
+}
+
+.manual-entry form input:not([type='checkbox']) {
+  width: 90%;
+  min-width: 0;
+  max-width: 90%;
+  box-sizing: border-box;
+  font-size: 16px;
+  padding: 0.55rem;
+}
+
+.night-toggle input[type='checkbox'] {
+  width: auto;
+  padding: 0;
+  flex-shrink: 0;
+}
+
+.hours-minutes-row {
+  display: flex;
+  gap: 0.5rem;
+  width: 90%;
+}
+
+.hours-minutes-row input {
+  flex: 1;
+  min-width: 0;
+  width: auto;
+  max-width: none;
+}
+
+.manual-entry button {
+  background: var(--track-bg);
+  color: var(--text);
+}
+
+.history h2 {
+  font-size: 1.1rem;
+}
+
+.session-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.session-list li {
+  background: var(--bg-card);
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  position: relative;
+}
+
+.session-main {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  font-weight: 600;
+}
+
+.badge {
+  background: var(--accent);
+  color: white;
+  font-size: 0.7rem;
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  font-weight: 600;
+}
+
+.session-notes {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-top: 0.25rem;
+}
+
+.delete-button {
+  background: none;
+  color: var(--danger);
+  font-size: 0.8rem;
+  font-weight: 400;
+  padding: 0.25rem 0;
+  margin-top: 0.25rem;
+}
