@@ -167,7 +167,7 @@ function Dashboard() {
         <input
           type="number"
           min="1"
-          placeholder="Goal hours (default 60)"
+          placeholder="Goal hours (default 40)"
           value={newGoalHours}
           onChange={(e) => setNewGoalHours(e.target.value)}
         />
