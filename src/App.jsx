@@ -25,7 +25,7 @@ function AppRoutes() {
 function App() {
   const [session, setSession] = useState(null)
   const [loading, setLoading] = useState(true)
-  const [darkMode, setDarkMode] = useState(() => localStorage.getItem('theme') === 'dark')
+  const [darkMode, setDarkMode] = useState(() => localStorage.getItem('theme') !== 'light')
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
