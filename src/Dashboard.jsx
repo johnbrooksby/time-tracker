@@ -109,22 +109,10 @@ function Dashboard() {
     <div className="dashboard">
       <h2>{household?.name}</h2>
       {household && (
-        <>
-          <p className="invite-code">
-            Invite code: <strong>{household.invite_code}</strong> — share this so others can join
-            your household
-          </p>
-          <div className="household-actions">
-            <button className="link-button" onClick={handleLeaveHousehold}>
-              Leave household
-            </button>
-            {household.created_by === userId && (
-              <button className="delete-button" onClick={handleDeleteHousehold}>
-                Delete household
-              </button>
-            )}
-          </div>
-        </>
+        <p className="invite-code">
+          Invite code: <strong>{household.invite_code}</strong> — share this so others can join
+          your household
+        </p>
       )}
       {loading ? (
         <p>Loading...</p>
@@ -185,6 +173,19 @@ function Dashboard() {
         />
         <button type="submit">Create tracker</button>
       </form>
+
+      {household && (
+        <div className="household-actions">
+          <button className="link-button" onClick={handleLeaveHousehold}>
+            Leave household
+          </button>
+          {household.created_by === userId && (
+            <button className="delete-button" onClick={handleDeleteHousehold}>
+              Delete household
+            </button>
+          )}
+        </div>
+      )}
     </div>
   )
 }

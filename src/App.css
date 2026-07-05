@@ -107,12 +107,17 @@ body {
 
 .household-actions {
   display: flex;
-  gap: 1rem;
-  margin-bottom: 1.5rem;
+  justify-content: center;
+  gap: 1.5rem;
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
 }
 
+.household-actions .link-button,
 .household-actions .delete-button {
-  font-size: 0.9rem;
+  font-size: 0.8rem;
+  opacity: 0.7;
 }
 
 .theme-toggle {
