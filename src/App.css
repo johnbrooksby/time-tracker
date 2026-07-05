@@ -105,6 +105,16 @@ body {
   margin-bottom: 1rem;
 }
 
+.household-actions {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.household-actions .delete-button {
+  font-size: 0.9rem;
+}
+
 .theme-toggle {
   display: inline-flex;
   align-items: center;

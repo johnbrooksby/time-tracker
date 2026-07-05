@@ -4,7 +4,8 @@ import { supabase } from './lib/supabase'
 import { useHousehold } from './HouseholdContext'
 
 function Dashboard() {
-  const { household } = useHousehold()
+  const { household, refresh } = useHousehold()
+  const [userId, setUserId] = useState(null)
   const [trackers, setTrackers] = useState([])
   const [loading, setLoading] = useState(true)
   const [newName, setNewName] = useState('')
@@ -24,6 +25,34 @@ function Dashboard() {
 
     return () => supabase.removeChannel(channel)
   }, [])
+
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data }) => setUserId(data.user?.id ?? null))
+  }, [])
+
+  async function handleLeaveHousehold() {
+    if (!confirm(`Leave "${household.name}"? You'll need an invite code to rejoin.`)) return
+
+    await supabase
+      .from('household_members')
+      .delete()
+      .eq('household_id', household.id)
+      .eq('user_id', userId)
+
+    await refresh()
+  }
+
+  async function handleDeleteHousehold() {
+    if (
+      !confirm(
+        `Permanently delete "${household.name}"? This removes all its trackers and history for everyone.`
+      )
+    )
+      return
+
+    await supabase.from('households').delete().eq('id', household.id)
+    await refresh()
+  }
 
   async function fetchTrackers() {
     const { data, error } = await supabase
@@ -80,10 +109,22 @@ function Dashboard() {
     <div className="dashboard">
       <h2>{household?.name}</h2>
       {household && (
-        <p className="invite-code">
-          Invite code: <strong>{household.invite_code}</strong> — share this so others can join
-          your household
-        </p>
+        <>
+          <p className="invite-code">
+            Invite code: <strong>{household.invite_code}</strong> — share this so others can join
+            your household
+          </p>
+          <div className="household-actions">
+            <button className="link-button" onClick={handleLeaveHousehold}>
+              Leave household
+            </button>
+            {household.created_by === userId && (
+              <button className="delete-button" onClick={handleDeleteHousehold}>
+                Delete household
+              </button>
+            )}
+          </div>
+        </>
       )}
       {loading ? (
         <p>Loading...</p>
