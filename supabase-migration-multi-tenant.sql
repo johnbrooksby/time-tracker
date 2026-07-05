@@ -34,10 +34,17 @@ $$;
 alter table public.households enable row level security;
 alter table public.household_members enable row level security;
 
+-- Includes "or created_by = auth.uid()" so a user can see the household
+-- they just created via `insert ... select()`, before their own
+-- household_members row exists (INSERT...RETURNING is subject to the
+-- SELECT policy too, otherwise the whole insert gets rolled back).
 create policy "Members can read their households"
   on public.households for select
   to authenticated
-  using (id in (select public.user_household_ids()));
+  using (
+    id in (select public.user_household_ids())
+    or created_by = auth.uid()
+  );
 
 create policy "Authenticated users can create a household"
   on public.households for insert

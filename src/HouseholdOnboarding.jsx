@@ -51,28 +51,16 @@ function HouseholdOnboarding() {
     setBusy(true)
     setError('')
 
-    const { data: found, error: lookupError } = await supabase
-      .from('households')
-      .select('id')
-      .eq('invite_code', code.trim().toLowerCase())
-      .maybeSingle()
+    const { error: joinError } = await supabase.rpc('join_household_by_code', {
+      p_code: code.trim(),
+    })
 
-    if (lookupError || !found) {
-      setError('No household found with that invite code.')
-      setBusy(false)
-      return
-    }
-
-    const {
-      data: { user },
-    } = await supabase.auth.getUser()
-
-    const { error: memberError } = await supabase
-      .from('household_members')
-      .insert({ household_id: found.id, user_id: user.id })
-
-    if (memberError) {
-      setError(memberError.message)
+    if (joinError) {
+      setError(
+        joinError.message === 'invalid_invite_code'
+          ? 'No household found with that invite code.'
+          : joinError.message
+      )
       setBusy(false)
       return
     }
