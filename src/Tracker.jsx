@@ -30,6 +30,12 @@ function Tracker() {
   const [notes, setNotes] = useState('')
   const [night, setNight] = useState(false)
 
+  const [editingSessionId, setEditingSessionId] = useState(null)
+  const [editHours, setEditHours] = useState('')
+  const [editMinutes, setEditMinutes] = useState('')
+  const [editNight, setEditNight] = useState(false)
+  const [editNotes, setEditNotes] = useState('')
+
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => setUserId(data.user?.id ?? null))
   }, [])
@@ -156,6 +162,29 @@ function Tracker() {
     fetchSessions()
   }
 
+  function startEditingSession(s) {
+    setEditingSessionId(s.id)
+    setEditHours(String(Math.floor(s.minutes / 60)))
+    setEditMinutes(String(s.minutes % 60))
+    setEditNight(s.night)
+    setEditNotes(s.notes ?? '')
+  }
+
+  async function handleSessionEditSubmit(e) {
+    e.preventDefault()
+    const hours = parseInt(editHours, 10) || 0
+    const minutes = (parseInt(editMinutes, 10) || 0) + hours * 60
+    if (minutes <= 0) return
+
+    await supabase
+      .from('driving_sessions')
+      .update({ minutes, night: editNight, notes: editNotes.trim() || null })
+      .eq('id', editingSessionId)
+
+    setEditingSessionId(null)
+    fetchSessions()
+  }
+
   return (
     <div className="tracker">
       <Link to="/" className="back-link">
@@ -278,19 +307,67 @@ function Tracker() {
           <p>No sessions logged yet.</p>
         ) : (
           <ul className="session-list">
-            {sessions.map((s) => (
-              <li key={s.id}>
-                <div className="session-main">
-                  <span>{new Date(s.started_at).toLocaleDateString()}</span>
-                  <span>{formatMinutes(s.minutes)}</span>
-                  {s.night && <span className="badge">Night</span>}
-                </div>
-                {s.notes && <div className="session-notes">{s.notes}</div>}
-                <button className="delete-button" onClick={() => deleteSession(s.id)}>
-                  Delete
-                </button>
-              </li>
-            ))}
+            {sessions.map((s) =>
+              editingSessionId === s.id ? (
+                <li key={s.id}>
+                  <form className="session-edit-form" onSubmit={handleSessionEditSubmit}>
+                    <div className="hours-minutes-row">
+                      <input
+                        type="number"
+                        min="0"
+                        placeholder="Hours"
+                        value={editHours}
+                        onChange={(e) => setEditHours(e.target.value)}
+                      />
+                      <input
+                        type="number"
+                        min="0"
+                        placeholder="Minutes"
+                        value={editMinutes}
+                        onChange={(e) => setEditMinutes(e.target.value)}
+                      />
+                    </div>
+                    <label className="night-toggle">
+                      <input
+                        type="checkbox"
+                        checked={editNight}
+                        onChange={(e) => setEditNight(e.target.checked)}
+                      />
+                      Night driving
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="Notes (optional)"
+                      value={editNotes}
+                      onChange={(e) => setEditNotes(e.target.value)}
+                    />
+                    <div className="tracker-actions">
+                      <button type="submit">Save</button>
+                      <button type="button" onClick={() => setEditingSessionId(null)}>
+                        Cancel
+                      </button>
+                    </div>
+                  </form>
+                </li>
+              ) : (
+                <li key={s.id}>
+                  <div className="session-main">
+                    <span>{new Date(s.started_at).toLocaleDateString()}</span>
+                    <span>{formatMinutes(s.minutes)}</span>
+                    {s.night && <span className="badge">Night</span>}
+                  </div>
+                  {s.notes && <div className="session-notes">{s.notes}</div>}
+                  <div className="tracker-actions">
+                    <button className="link-button" onClick={() => startEditingSession(s)}>
+                      Edit
+                    </button>
+                    <button className="delete-button" onClick={() => deleteSession(s.id)}>
+                      Delete
+                    </button>
+                  </div>
+                </li>
+              )
+            )}
           </ul>
         )}
       </section>

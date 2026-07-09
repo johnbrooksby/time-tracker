@@ -497,6 +497,12 @@ button {
   font-weight: 600;
 }
 
+.session-edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
 .badge {
   background: var(--accent);
   color: white;
