@@ -1,0 +1,19 @@
+name: Keep Supabase project alive
+
+on:
+  schedule:
+    # Runs Monday and Thursday at 13:00 UTC — keeps the gap between pings
+    # well under Supabase's ~7-day free-tier auto-pause window.
+    - cron: '0 13 * * 1,4'
+  workflow_dispatch: {}
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Supabase REST API
+        run: |
+          curl --fail -sS \
+            "https://diyudroqytolfpogveod.supabase.co/rest/v1/trackers?select=id&limit=1" \
+            -H "apikey: sb_publishable_OfcYjtDXxvREg6KEwErklA_jC5KO4jY" \
+            -H "Authorization: Bearer sb_publishable_OfcYjtDXxvREg6KEwErklA_jC5KO4jY"
