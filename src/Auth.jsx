@@ -30,7 +30,12 @@ function Auth() {
     setSending(false)
 
     if (error) {
-      setErrorMsg(error.message)
+      const hasUsefulMessage = error.message && error.message !== '{}'
+      setErrorMsg(
+        hasUsefulMessage
+          ? error.message
+          : `The server couldn't send the sign-in email${error.status ? ` (error ${error.status})` : ''}. This is most likely an email-delivery problem on the server, not your address.`
+      )
     } else {
       setSent(true)
       setCooldown(RESEND_COOLDOWN_SECONDS)
