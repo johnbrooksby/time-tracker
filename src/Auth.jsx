@@ -1,35 +1,68 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { supabase } from './lib/supabase'
+
+const RESEND_COOLDOWN_SECONDS = 60
 
 function Auth() {
   const [email, setEmail] = useState('')
-  const [status, setStatus] = useState('idle') // idle | sending | sent | error
+  const [sent, setSent] = useState(false)
+  const [sending, setSending] = useState(false)
   const [errorMsg, setErrorMsg] = useState('')
+  const [cooldown, setCooldown] = useState(0)
 
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-    setStatus('sending')
+  useEffect(() => {
+    if (cooldown <= 0) return
+    const timer = setTimeout(() => setCooldown((c) => c - 1), 1000)
+    return () => clearTimeout(timer)
+  }, [cooldown])
+
+  async function sendLink() {
+    setSending(true)
     setErrorMsg('')
 
     const { error } = await supabase.auth.signInWithOtp({
-      email,
+      email: email.trim(),
       options: {
         emailRedirectTo: window.location.origin,
       },
     })
 
+    setSending(false)
+
     if (error) {
-      setStatus('error')
       setErrorMsg(error.message)
     } else {
-      setStatus('sent')
+      setSent(true)
+      setCooldown(RESEND_COOLDOWN_SECONDS)
     }
   }
 
-  if (status === 'sent') {
+  function handleSubmit(e) {
+    e.preventDefault()
+    sendLink()
+  }
+
+  if (sent) {
     return (
       <div className="auth-card">
-        <p>Check your email for a sign-in link. Open it on this device to log in.</p>
+        <p>
+          We sent a sign-in link to <strong>{email.trim()}</strong>. Open it on this device to log
+          in. If it doesn't show up, check your spam folder or send another.
+        </p>
+        <button type="button" onClick={sendLink} disabled={sending || cooldown > 0}>
+          {sending ? 'Sending...' : cooldown > 0 ? `Send again in ${cooldown}s` : 'Send again'}
+        </button>
+        <button
+          type="button"
+          className="link-button"
+          onClick={() => {
+            setSent(false)
+            setErrorMsg('')
+          }}
+        >
+          Use a different email
+        </button>
+        {errorMsg && <p className="error-text">{errorMsg}</p>}
       </div>
     )
   }
@@ -45,11 +78,11 @@ function Auth() {
           onChange={(e) => setEmail(e.target.value)}
           required
         />
-        <button type="submit" disabled={status === 'sending'}>
-          {status === 'sending' ? 'Sending link...' : 'Send sign-in link'}
+        <button type="submit" disabled={sending}>
+          {sending ? 'Sending link...' : 'Send sign-in link'}
         </button>
       </form>
-      {status === 'error' && <p className="error-text">{errorMsg}</p>}
+      {errorMsg && <p className="error-text">{errorMsg}</p>}
     </div>
   )
 }

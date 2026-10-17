@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { useParams, Link } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import { supabase } from './lib/supabase'
 import { useHousehold } from './HouseholdContext'
 
@@ -159,6 +159,7 @@ function Tracker() {
 
   async function deleteSession(id) {
     await supabase.from('driving_sessions').delete().eq('id', id)
+    setEditingSessionId(null)
     fetchSessions()
   }
 
@@ -187,9 +188,6 @@ function Tracker() {
 
   return (
     <div className="tracker">
-      <Link to="/" className="back-link">
-        &larr; All trackers
-      </Link>
       <h2 className="tracker-name">{tracker?.name ?? '...'}</h2>
 
       <section className="progress-section">
@@ -346,6 +344,13 @@ function Tracker() {
                       <button type="button" onClick={() => setEditingSessionId(null)}>
                         Cancel
                       </button>
+                      <button
+                        type="button"
+                        className="delete-button"
+                        onClick={() => deleteSession(s.id)}
+                      >
+                        Delete
+                      </button>
                     </div>
                   </form>
                 </li>
@@ -360,9 +365,6 @@ function Tracker() {
                   <div className="tracker-actions">
                     <button className="link-button" onClick={() => startEditingSession(s)}>
                       Edit
-                    </button>
-                    <button className="delete-button" onClick={() => deleteSession(s.id)}>
-                      Delete
                     </button>
                   </div>
                 </li>

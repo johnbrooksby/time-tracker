@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { BrowserRouter, Routes, Route, Link } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Link, useLocation, useNavigate } from 'react-router-dom'
 import { supabase } from './lib/supabase'
 import Auth from './Auth'
 import Dashboard from './Dashboard'
@@ -7,6 +7,25 @@ import Tracker from './Tracker'
 import { HouseholdProvider, useHousehold } from './HouseholdContext'
 import HouseholdOnboarding from './HouseholdOnboarding'
 import './App.css'
+
+function Header({ session }) {
+  const { pathname } = useLocation()
+  const navigate = useNavigate()
+  const onTrackerPage = pathname.startsWith('/trackers/')
+
+  return (
+    <header>
+      <Link to="/" className="header-title-link">
+        <h1>Time Tracker</h1>
+      </Link>
+      {session && onTrackerPage && (
+        <button className="link-button" onClick={() => navigate('/')}>
+          &larr; Back
+        </button>
+      )}
+    </header>
+  )
+}
 
 function AppRoutes() {
   const { household, loading } = useHousehold()
@@ -50,16 +69,7 @@ function App() {
   return (
     <BrowserRouter>
       <div className="app">
-        <header>
-          <Link to="/" className="header-title-link">
-            <h1>Time Tracker</h1>
-          </Link>
-          {session && (
-            <button className="link-button" onClick={() => supabase.auth.signOut()}>
-              Sign out
-            </button>
-          )}
-        </header>
+        <Header session={session} />
         {session ? (
           <HouseholdProvider>
             <AppRoutes />
