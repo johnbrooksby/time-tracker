@@ -157,8 +157,12 @@ function Tracker() {
     setManualDate('')
   }
 
-  async function deleteSession(id) {
-    await supabase.from('driving_sessions').delete().eq('id', id)
+  async function deleteSession(s) {
+    const when = new Date(s.started_at).toLocaleDateString()
+    if (!confirm(`Delete the ${formatMinutes(s.minutes)} entry from ${when}? This can't be undone.`))
+      return
+
+    await supabase.from('driving_sessions').delete().eq('id', s.id)
     setEditingSessionId(null)
     fetchSessions()
   }
@@ -347,7 +351,7 @@ function Tracker() {
                       <button
                         type="button"
                         className="delete-button"
-                        onClick={() => deleteSession(s.id)}
+                        onClick={() => deleteSession(s)}
                       >
                         Delete
                       </button>

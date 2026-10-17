@@ -43,12 +43,14 @@ function Dashboard() {
   }
 
   async function handleDeleteHousehold() {
-    if (
-      !confirm(
-        `Permanently delete "${household.name}"? This removes all its trackers and history for everyone.`
-      )
+    const typed = prompt(
+      `This permanently deletes "${household.name}" along with all its trackers and history, for everyone.\n\nType the household name to confirm:`
     )
+    if (typed === null) return
+    if (typed.trim().toLowerCase() !== household.name.trim().toLowerCase()) {
+      alert("That didn't match the household name, so nothing was deleted.")
       return
+    }
 
     await supabase.from('households').delete().eq('id', household.id)
     await refresh()
